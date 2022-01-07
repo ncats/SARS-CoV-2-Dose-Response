@@ -22,7 +22,7 @@ that:
     the original publication)
 -   The seroconversion D50 is significantly lower than the fever D50 for
     the Gamma a strain as well
--   The seroconverstion D50 is signficantly lower for Gamma than for
+-   The seroconversion D50 is significantly lower for Gamma than for
     WA-1
 -   The fever D50 is not significantly different for Gamma than for WA-1
 -   The shedding D50 is significantly different for Gamma than for WA-1
