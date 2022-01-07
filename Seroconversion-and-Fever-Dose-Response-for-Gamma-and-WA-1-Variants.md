@@ -32,63 +32,13 @@ that:
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 library(VGAM)
-```
-
-    ## Loading required package: stats4
-
-    ## Loading required package: splines
-
-    ## 
-    ## Attaching package: 'VGAM'
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     fill
-
-``` r
 library(emdbook)
-```
-
-    ## 
-    ## Attaching package: 'emdbook'
-
-    ## The following objects are masked from 'package:VGAM':
-    ## 
-    ##     dbetabinom, lambertW, rbetabinom
-
-``` r
 library(scales)
+library(cowplot)
 ```
 
-    ## 
-    ## Attaching package: 'scales'
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     discard
-
-    ## The following object is masked from 'package:readr':
-    ## 
-    ##     col_factor
-
 ``` r
-library(cowplot)
-
 nbacc_dose_response_data <- read.csv("nbacc_sero_fever.csv")
 nbacc_dose_response_data[nbacc_dose_response_data == '-'] <- 0 
 nbacc_dose_response_data[nbacc_dose_response_data == '+'] <- 1 
@@ -1441,7 +1391,7 @@ p <- p + geom_errorbarh(aes(xmin=as.numeric(`85% CI - LB`),xmax=as.numeric(`85% 
 p
 ```
 
-![](Seroconversion-and-Fever-Dose-Response-for-Gamma-and-WA-1-Variants_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](Seroconversion-and-Fever-Dose-Response-for-Gamma-and-WA-1-Variants_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 ``` r
 ggsave("fig/marginal_dose_response.tiff",plot = p,width=1700,height=1400,dpi=300,units="px", device='tiff',compression = "lzw" )
@@ -1499,7 +1449,7 @@ legend <- get_legend(p + theme(legend.box.margin = margin(0, 0, 0, 0)))
 plot_grid(prow,legend,rel_widths = c(3,0.35))
 ```
 
-![](Seroconversion-and-Fever-Dose-Response-for-Gamma-and-WA-1-Variants_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](Seroconversion-and-Fever-Dose-Response-for-Gamma-and-WA-1-Variants_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 ``` r
 ggsave("fig/shedding_rescale.tiff",plot=plot_grid(prow,legend,rel_widths = c(3,0.35)),
