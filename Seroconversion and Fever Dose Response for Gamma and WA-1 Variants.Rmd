@@ -1,12 +1,10 @@
 ---
 title: Analysis of Seroconversion and Fever Dose Response Data for SARS-CoV-2 WA-1
   and Gamma Variants
-output:
-  html_notebook: default
-  pdf_document: default
+output: github_document
 ---
 
-In this notebook I analyze the seroconversion (PRNT50) and fever endpoint dose response for WA-1 and Gamma SARS-CoV-2 variants. In a previous publication we performed bivariate modeling for the two endpoints simultaneously for just WA-1 and showed that Seroconversion had a lower median effective dose (D50) than fever. Here I look to repeat that analysis for the Gamma variant and do a comparison between the two variants for both endpoints. To provide clarity into the effect that modeling choices have on our results, I estimate equivalent parameters and perform similar tests on the effect of the variant using a standard univariate GLM approach (as opposed to the bivariate model). In addition to seroconversion and fever, I explore the effect of the variant on shedding rate. The conclusions from the analysis are that:
+In this notebook I analyze the seroconversion (PRNT50) and fever endpoint dose response for WA-1 and Gamma SARS-CoV-2 variants. In a previous publication we performed bivariate modeling for the two endpoints simultaneously for just WA-1 and showed that Seroconversion had a lower median effective dose (D50) than fever. Here I look to repeat that analysis for the Gamma variant and do a comparison between the two variants for both endpoints. To provide clarity into the effect that modeling choices have on our results, I estimate equivalent parameters and perform similar tests on the effect of the variant using a standard univariate GLM approach (as opposed to the bivariate model). In addition to seroconversion and fever, I explore the effect of the variant on shedding rate. The primary conclusions from this analysis are that:
 
 * The original result of seroconversion D50 being significantly lower than the fever D50 for the WA-1 strain still holds when using PRNT50 as the updated seroconversion proxy (as opposed to the IgG ELISA in the original publication)
 * The seroconversion D50 is significantly lower than the fever D50 for the Gamma a strain as well
@@ -15,13 +13,15 @@ In this notebook I analyze the seroconversion (PRNT50) and fever endpoint dose r
 * The shedding D50 is significantly different for Gamma than for WA-1
 * When we transform dose onto the seroconversion probit scale, the shedding dose response between the two variants is not significantly different
 
-```{r}
+```{r message=FALSE}
 library(tidyverse)
 library(VGAM)
 library(emdbook)
 library(scales)
 library(cowplot)
+```
 
+```{r}
 nbacc_dose_response_data <- read.csv("nbacc_sero_fever.csv")
 nbacc_dose_response_data[nbacc_dose_response_data == '-'] <- 0 
 nbacc_dose_response_data[nbacc_dose_response_data == '+'] <- 1 
@@ -53,7 +53,7 @@ cont_table <- table(nbacc_dose_response_data[nbacc_dose_response_data$variant=='
 print(cont_table)
 print(fisher.test(cont_table,alternative = "greater"))
 ```
-#### Answer: 
+#### Interpretation: 
 Maybe, results are inconclusive; the test failed to reject the null that the endpoints are independent. However, the contingency table shows there are no animals that showed fever and did not seroconvert. I conclude that despite the lack of statistically significant support the table itself and the biological reasons for treating the endpoints as correlated supports a joint analysis.
 
 #### Hypothesis 2: The dose response parameters are the same for fever and seroconversion.
@@ -80,7 +80,7 @@ teststat <- -2 * (as.numeric(logLik(wa1_probit_biv_null))-as.numeric(logLik(wa1_
 p.val <- pchisq(teststat, df = length(coef(wa1_probit_biv)) -length(coef(wa1_probit_biv_null)), lower.tail = FALSE)
 print(p.val)
 ```
-#### Answer: 
+#### Interpretation: 
 
 The data allow us to reject the hypothesis that serconversion and fever should be modeled with the same dose response parameters (p=0.0122; LRT). Therefore, we conclude that serconversion and fever are likely to have different dose response curves.
 
@@ -105,7 +105,7 @@ p.val <- pchisq(teststat, df = 1, lower.tail = FALSE)
 p.val
 ```
 
-#### Answer: 
+#### Interpretation:
 
 The data allow us to reject the hypothesis that fever is independent of dose when seroconversion status is taken into account (p=0.01; LRT)
 
@@ -123,7 +123,7 @@ print(cont_table)
 fisher.test(cont_table,alternative = "greater")
 ```
 
-#### Answer:
+#### Interpretation: 
 Maybe, results are inconclusive; the test failed to reject the null that the endpoints are independent. However, the contingency table shows there are no animals that showed fever and did not seroconvert.
 
 
@@ -149,8 +149,8 @@ teststat <- -2 * (as.numeric(logLik(gamma_probit_biv_null))-as.numeric(logLik(ga
 p.val <- pchisq(teststat, df = length(coef(gamma_probit_biv)) -length(coef(gamma_probit_biv_null)), lower.tail = FALSE)
 p.val
 ```
-#### Answer: 
-The data allow us to reject the hypothesis that serconversion and fever should be modeled with the same dose response parameters(p=0.0012;LRT)
+#### Interpretation:  
+The data allow us to reject the hypothesis that serconversion and fever should be modeled with the same dose response parameters (p=0.0014;LRT)
 
 #### Hypothesis 3: Is fever conditional on seroconversion independent of dose?
 
@@ -171,13 +171,13 @@ p.val <- pchisq(teststat, df = 1, lower.tail = FALSE)
 p.val
 
 ```
-#### Answer: 
-The data allow us to reject the hypothesis that fever is not dose dependent when conditioned up seroconversion status (p=0.006; LRT)
+#### Interpretation: 
+The data allow us to reject the hypothesis that fever is not dose dependent when conditioned up seroconversion status (p=0.007; LRT)
 
 ### Conclusion from the Gamma analysis:
 
-* Seroconversion and fever are best modeled with different dose response parameters (p=0.0012)
-* Fever is still dose dependent when conditioned on seroconversion; given an infection takes place the likelihood of being symptomatic is dose dependent.(p=0.006)
+* Seroconversion and fever are best modeled with different dose response parameters (p=0.0014)
+* Fever is still dose dependent when conditioned on seroconversion; given an infection takes place the likelihood of being symptomatic is dose dependent.(p=0.007)
 * This result is entirely consistent with the results obtained from WA-1 
 
 ## Question 2: Is the dose response for the Gamma variant different from the dose response for WA-1?
@@ -221,8 +221,8 @@ p.val <- pchisq(teststat, df = length(coef(joint_probit_biv)) - length(coef(join
 p.val 
 
 ```
-#### Answer: 
-The data allow us to reject the null hypothesis that the variant has no effect on the response (p=0.033; LRT). Importantly, this overall effect appears to be primarily driven by a variant effect on the seroconversion endpoint (p=0.018; LRT)
+#### Interpretation:  
+The data allow us to reject the null hypothesis that the variant has no effect on the response (p=0.04; LRT). Importantly, this overall effect appears to be primarily driven by a variant effect on the seroconversion endpoint (p=0.02; LRT)
 
 #### Hypothesis: The intercepts and slopes of the bivariate sero/fever response is independent of the variant type 
 
@@ -242,11 +242,11 @@ p.val
 anova(joint_probit_biv_null,joint_probit_biv,joint_probit_biv_interact,test = 'LRT',type='I')
 ```
 
-#### Answer: 
+#### Interpretation:  
 The data do not allow us to reject the null hypothesis that the variant has an effect on the slope of the bivariate dose response. 
 
 ### Conclusion from bivariate comparison between variants: 
-The bivariate modeling results suggest that the variant has an overall effect (LRT test p=0.033) on the intercepts but not the slope of the response. Specifically, the variant effect is only significant for the intercept of the seroconversion endpoint (p=0.018; LRT). 
+The bivariate modeling results suggest that the variant has an overall effect (LRT test p=0.04) on the intercepts but not the slope of the response. Specifically, the variant effect is only significant for the intercept of the seroconversion endpoint (p=0.02; LRT). 
 
 
 ### Is this result supported by looking at individual endpoints in a univariate modeling framework?
@@ -273,9 +273,9 @@ anova(joint_probit_sero_null,joint_probit_sero,joint_probit_sero_interact,test =
 teststat <- -2 * (as.numeric(logLik(joint_probit_sero_null))-as.numeric(logLik(joint_probit_sero)))
 p.val <- pchisq(teststat, df = 1 , lower.tail = FALSE)
 p.val 
-# Answer: The data allow us to reject the null that the variant has no effect on the intercept of seroconversion
 ```
-
+#### Interpretation: 
+The data allow us to reject the null that the variant has no effect on the intercept of seroconversion.
 
 ```{r}
 joint_probit_fever <- glm(Fever_binary ~ variant + logdose,family=binomial(link="probit"),
@@ -297,14 +297,15 @@ anova(joint_probit_fever_null,joint_probit_fever,joint_probit_fever_interact,tes
 teststat <- -2 * (as.numeric(logLik(joint_probit_fever_null))-as.numeric(logLik(joint_probit_fever)))
 p.val <- pchisq(teststat, df = 1 , lower.tail = FALSE)
 p.val 
-# Answer: Yes, the data do not allow us to reject the null that the variant has no effect on fever
 ```
+#### Interpretation:
+The data do not allow us to reject the null that the variant has no effect on fever dose response
 
 ### Conclusions from comparing the both endpoints between the two variants within univariate modeling frameworks:
 
 * The univariate models suggest that:
-* there is an overall effect of the variant on the dose response intercept for seroconversion (p=0.027; LRT)
-* there is no overall effect of the variant on the dose response intercept for fever (p=0.182; LRT)
+* there is an overall effect of the variant on the dose response intercept for seroconversion (p=0.032; LRT)
+* there is no overall effect of the variant on the dose response intercept for fever (p=0.19; LRT)
 * There is no signficant effect of the variant on the dose response slope for either seroconversion or fever
 * The bivariate and univariate models are consistent in that the variant effect size estimates are similar and that only the variant effect on seroconversion is statistically significant.
 
@@ -720,8 +721,8 @@ p.val <- pchisq(teststat, df = 1 , lower.tail = FALSE)
 p.val 
 ```
 
-#### Answer:
-The data allow us to reject the null hypothesis that shedding dose response is independent of the variant (p=0.025;LRT)
+#### Interpretation:
+The data allow us to reject the null hypothesis that shedding dose response is independent of the variant (p=0.029;LRT)
 
 #### Hypothesis: probability of shedding is independent of the variant type when dose is rescaled based on the quantiles of the seroconversion dose response for each variant 
 
@@ -736,7 +737,7 @@ teststat <- -2 * (as.numeric(logLik(shedding_model_rescale_null))-as.numeric(log
 p.val <- pchisq(teststat, df = 1 , lower.tail = FALSE)
 p.val
 ```
-#### Answer:
+#### Interpretation:
 The data do not allow us to reject the null hypothesis shedding dose response is depenent on the variant if we account for the likelihood of seroconversion
 
 ### Conclusions from shedding analysis

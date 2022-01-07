@@ -35,14 +35,6 @@ for(logD50_diff in seq(0,-1,-0.05)){
     teststat <- -2 * (as.numeric(logLik(pooled_probit))-as.numeric(logLik(variant_probit)))
     p.val <- pchisq(teststat, df = 1, lower.tail = FALSE)
     
-    
-    #p <- ggplot(hypothetical_combined,aes(logdose,fever,color=variant)) + 
-    #  geom_point() + 
-    #  geom_smooth(method = "glm", fullrange=T,
-    #              se=F, method.args = list(family = binomial(link="probit"))) + 
-    #  theme_bw()
-    #p
-    
     return(c(logD50_diff,teststat,p.val))
   }))
   

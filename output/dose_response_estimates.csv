@@ -1,11 +1,11 @@
 variant,Response,Metric,MLE Estimate,95% CI - LB,95% CI - UB,85% CI - LB,85% CI - UB
-WA-1,PRNT50_binary,D50,19.4,2,68.6,4.1,47.9
-Gamma,PRNT50_binary,D50,0.9,0.3,5.7,0.3,3.4
-WA-1,Fever_binary,D50,282.5,106.7,978.4,137.5,622
-Gamma,Fever_binary,D50,93.7,32.9,394.4,43.2,269.7
+WA-1,PRNT50_binary,D50,19.3,2.3,70.3,4.2,48.6
+Gamma,PRNT50_binary,D50,1,0.3,5.7,0.4,3.6
+WA-1,Fever_binary,D50,284,109.8,1092.1,138.3,641.4
+Gamma,Fever_binary,D50,95.5,33.5,404.7,43.6,278.8
 WA-2,PRNT50_binary,logD50,1.29,0.09,1.81,0.57,1.66
-Gamma,PRNT50_binary,logD50,-0.07,-0.66,0.65,-0.49,0.48
-WA-2,Fever_binary,logD50,2.45,2.01,2.95,2.13,2.78
-Gamma,Fever_binary,logD50,1.97,1.49,2.58,1.63,2.41
-Both,PRNT50_binary,slope,1.4,0.83,2.52,0.92,2.26
-Both,Fever_binary,slope,1.8,1.15,3.97,1.26,2.85
+Gamma,PRNT50_binary,logD50,-0.01,-0.62,0.69,-0.45,0.52
+WA-2,Fever_binary,logD50,2.45,2.01,2.97,2.13,2.79
+Gamma,Fever_binary,logD50,1.98,1.5,2.59,1.63,2.43
+Both,PRNT50_binary,slope,1.4,0.81,2.58,0.9,2.27
+Both,Fever_binary,slope,1.76,1.09,3.53,1.22,2.68
